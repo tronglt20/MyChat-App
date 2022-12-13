@@ -1,0 +1,15 @@
+﻿using System.Linq.Expressions;
+
+namespace Domain.Interfaces.Base
+{
+    public interface IBaseRepository<T> where T : class
+    {
+        IQueryable<T> GetQuery(Expression<Func<T, bool>> expression);
+
+        Task InsertAsync(T entity, bool saveChanges = true);
+
+        Task DeleteAsync(T entity, bool saveChanges = true);
+
+        Task DeleteRangeAsync(IEnumerable<T> entities, bool saveChanges = true);
+    }
+}
