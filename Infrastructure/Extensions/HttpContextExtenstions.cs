@@ -1,5 +1,5 @@
 ﻿using Domain.Base.Interfaces;
-using Infrastructure.Identity;
+using Infrastructure.Utilities;
 using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Extensions

@@ -6,10 +6,10 @@ namespace Infrastructure
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-        public DbContext DbContext { get; set; }
+        public ApplicationDbContext DbContext { get; set; }
         public DbSet<T> Entities => DbContext.Set<T>();
 
-        public BaseRepository(DbContext dbContext)
+        public BaseRepository(ApplicationDbContext dbContext)
         {
             DbContext = dbContext;
         }

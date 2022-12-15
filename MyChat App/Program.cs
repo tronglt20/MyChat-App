@@ -26,7 +26,9 @@ services.AddUserInfo();
 
 // Config MediatR
 services.AddMediatR(Assembly.GetExecutingAssembly());
-    
+
+services.AddTokenGenerator();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
