@@ -1,11 +1,8 @@
-﻿using Domain.Base.Utilities;
-using Domain.Interfaces.Base;
+﻿using Domain.Interfaces.Base;
 using Infrastructure;
-using Infrastructure.Extensions;
-using Infrastructure.Utilities;
 using Microsoft.EntityFrameworkCore;
 using MyChat_App.Services.IAM;
-using System.Reflection;
+using Utilities;
 
 namespace MyChat_App.Extensions
 {
@@ -43,47 +40,6 @@ namespace MyChat_App.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             return services.AddScoped<IAMService>();
-        }
-
-        public static void AddUserInfo(this IServiceCollection services)
-        {
-            services.AddScoped(serviceProvider =>
-            {
-                var httpContext = serviceProvider.GetService<IHttpContextAccessor>().HttpContext;
-
-                return httpContext?.CurrentUser();
-            });
-        }
-
-        public static void AddTokenGenerator(this IServiceCollection services)
-        {
-            services.AddSingleton<ITokenGenerator, TokenGenerator>();
-        }
-
-        public static IServiceCollection AddImplementationInterfaces(this IServiceCollection services
-            , Type interfaceType
-            , Type implementAssemblyType)
-        {
-            var implementTypes = Assembly.GetAssembly(implementAssemblyType).GetTypes().Where(_ =>
-                        _.IsClass
-                        && !_.IsAbstract
-                        && !_.IsInterface
-                        && !_.IsGenericType
-                        && _.GetInterface(interfaceType.Name) != null);
-
-            foreach (var implementType in implementTypes)
-            {
-                var mainInterfaces = implementType
-                    .GetInterfaces()
-                    .Where(_ => _.GenericTypeArguments.Count() == 0);
-
-                foreach (var mainInterface in mainInterfaces)
-                {
-                    services.AddScoped(mainInterface, implementType);
-                }
-            }
-
-            return services;
         }
 
     }

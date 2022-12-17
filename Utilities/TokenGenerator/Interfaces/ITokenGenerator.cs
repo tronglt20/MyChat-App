@@ -1,4 +1,4 @@
-﻿namespace Domain.Base.Utilities
+﻿namespace Utilities.Interfaces
 {
     public interface ITokenGenerator
     {

@@ -1,8 +1,8 @@
-﻿using Domain.Base.Interfaces;
-using Infrastructure.Utilities;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using Utilities.DTOs;
+using Utilities.Interfaces;
 
-namespace Infrastructure.Extensions
+namespace Utilities
 {
     public static class HttpContextExtenstions
     {
@@ -32,9 +32,9 @@ namespace Infrastructure.Extensions
             return GetClaimValue(context, AppClaimType.UserEmail);
         }
 
-        public static IUserInfo CurrentUser(this HttpContext context)
+        public static ICurrentUserInfo CurrentUser(this HttpContext context)
         {
-            return new UserInfo(context.UserId()
+            return new CurrentUserInfo(context.UserId()
                 , context.UserName()
                 , context.UserEmail());
         }

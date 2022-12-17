@@ -1,6 +1,7 @@
 using MediatR;
 using MyChat_App.Extensions;
 using System.Reflection;
+using Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,13 +22,16 @@ services
     .AddRepositoriesBase()
     .AddUnitOfWork();
 
-// Get current user info by token
-services.AddUserInfo();
+services.AddCurrentUserInfo();
+services.AddEmailSender();
+services.AddTokenGenerator();
 
 // Config MediatR
 services.AddMediatR(Assembly.GetExecutingAssembly());
 
-services.AddTokenGenerator();
+services
+    .AddJwt(configuration)
+    .AddAuthentication(configuration);
 
 var app = builder.Build();
 

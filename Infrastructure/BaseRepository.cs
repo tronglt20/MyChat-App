@@ -43,5 +43,15 @@ namespace Infrastructure
             if (saveChanges)
                 await DbContext.SaveChangesAsync();
         }
+
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
+        {
+            return await Entities.AnyAsync(expression);
+        }
+
+        public async Task<T> GetAsync(Expression<Func<T, bool>> expression)
+        {
+            return await GetQuery(expression).FirstOrDefaultAsync();
+        }
     }
 }

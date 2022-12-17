@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyChat_App.Services.IAM;
 using MyChat_App.ViewModels.IAM.Requests;
+using Utilities.DTOs;
 
 namespace MyChat_App.Controllers
 {
@@ -21,6 +22,13 @@ namespace MyChat_App.Controllers
         public async Task SignUpRequest([FromBody] SendSignupAccountRequest request)
         {
             await _service.SignUpRequestAsync(request);
+        }
+
+        [HttpPost("sign-in")]
+        [AllowAnonymous]
+        public async Task<LoginResult> SignIn([FromBody] SignInRequest request)
+        {
+            return await _service.SignInAsync(request);
         }
     }
 }

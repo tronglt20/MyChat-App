@@ -1,6 +1,6 @@
-﻿using Domain.Base.Utilities;
+﻿using Utilities.Interfaces;
 
-namespace Infrastructure.Utilities
+namespace Utilities
 {
     public class TokenGenerator : ITokenGenerator
     {
