@@ -1,33 +1,47 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Interfaces.Base;
+using MyChat_App.Services.Base;
 using MyChat_App.ViewModels.IAM.Requests;
-using System.Security.Claims;
+using MyChat_App.ViewModels.IAM.Responses;
 using Utilities.DTOs;
 using Utilities.Interfaces;
 using ErrorMessages = Domain.Entities.ErrorMessages;
 
-namespace MyChat_App.Services.IAM
+namespace MyChat_App.Services
 {
-    public class IAMService
+    public class IAMService : BaseService
     {
         private readonly IUserRepository _userRepo;
         private readonly IUserRegistrationRepository _userRegistrationRepo;
         private readonly ITokenGenerator _tokenGenerator;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IAuthenticationService _authenticationService;
 
         public IAMService(IUserRegistrationRepository userRegistrationRepo
+            , IAuthenticationService authenticationService
             , ITokenGenerator tokenGenerator
-            , IUnitOfWork unitOfWork
             , IUserRepository userRepo
-            , IAuthenticationService authenticationService)
+            , IUnitOfWork unitOfWork
+            , IServiceProvider serviceProvider
+            ) : base(serviceProvider, unitOfWork)
         {
             _userRegistrationRepo = userRegistrationRepo;
             _tokenGenerator = tokenGenerator;
-            _unitOfWork = unitOfWork;
             _userRepo = userRepo;
             _authenticationService = authenticationService;
+        }
+
+        public CurrentUserInfoResponse GetCurrentUser()
+        {
+            if (User == null)
+                return null;
+
+            return new CurrentUserInfoResponse
+            {
+                Id = User.Id,
+                Name = User.Name,
+                Email = User.Email,
+            };
         }
 
         public async Task SignUpRequestAsync(SendSignupAccountRequest request)
@@ -53,6 +67,8 @@ namespace MyChat_App.Services.IAM
             return result;
         }
 
+        #region Helper
+
         private async Task<User> ValidateOnSignInAsync(SignInRequest request)
         {
             var user = await _userRepo.GetAsync(request.Email);
@@ -61,11 +77,13 @@ namespace MyChat_App.Services.IAM
                 throw new BadHttpRequestException(ErrorMessages.UserOrPasswordIncorrect);
 
             var validPassword = await _userRepo.CheckPasswordAsync(user.Id, request.Password);
-            if(!validPassword)
+            if (!validPassword)
                 throw new BadHttpRequestException(ErrorMessages.UserOrPasswordIncorrect);
 
 
             return user;
         }
+
+        #endregion
     }
 }

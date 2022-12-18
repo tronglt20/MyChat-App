@@ -1,5 +1,7 @@
 using MediatR;
+using Microsoft.OpenApi.Models;
 using MyChat_App.Extensions;
+using MyChat_App.Services;
 using System.Reflection;
 using Utilities;
 
@@ -14,7 +16,33 @@ var environment = builder.Environment;
 services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
-services.AddSwaggerGen();
+services.AddHttpContextAccessor();
+services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Name = "Authorization",
+        Scheme = "Bearer",
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+                Reference = new OpenApiReference
+                {
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                }
+            },
+            new List<string>()
+        }
+    });
+});
 
 services
     .AddDatabase(configuration)
@@ -22,16 +50,22 @@ services
     .AddRepositoriesBase()
     .AddUnitOfWork();
 
-services.AddCurrentUserInfo();
-services.AddEmailSender();
-services.AddTokenGenerator();
+// Utilities
+services.AddCurrentUserInfo()
+    .AddEmailSender()
+    .AddTokenGenerator();
 
 // Config MediatR
 services.AddMediatR(Assembly.GetExecutingAssembly());
 
+// Add SignalR
+services.AddSignalR();
+
+// Add Authentication
 services
     .AddJwt(configuration)
     .AddAuthentication(configuration);
+
 
 var app = builder.Build();
 
@@ -42,7 +76,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+app.MapHub<ChatHubService>("/ChatHubService");
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -1,7 +1,7 @@
 ﻿using Domain.Interfaces.Base;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using MyChat_App.Services.IAM;
+using MyChat_App.Services;
 using Utilities;
 
 namespace MyChat_App.Extensions
@@ -26,9 +26,9 @@ namespace MyChat_App.Extensions
 
         public static IServiceCollection AddRepositoriesBase(this IServiceCollection services)
         {
-            return services
-                    .AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>))
-                    .AddImplementationInterfaces(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            return 
+                services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>))
+                        .AddImplementationInterfaces(typeof(IBaseRepository<>), typeof(BaseRepository<>));
         }
 
         public static IServiceCollection AddUnitOfWork(this IServiceCollection services)
@@ -39,7 +39,9 @@ namespace MyChat_App.Extensions
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            return services.AddScoped<IAMService>();
+            return 
+                services.AddScoped<IAMService>()
+                        .AddScoped<ChatHubService>();
         }
 
     }

@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyChat_App.Services.IAM;
+using MyChat_App.Services;
 using MyChat_App.ViewModels.IAM.Requests;
+using MyChat_App.ViewModels.IAM.Responses;
 using Utilities.DTOs;
 
 namespace MyChat_App.Controllers
@@ -29,6 +30,24 @@ namespace MyChat_App.Controllers
         public async Task<LoginResult> SignIn([FromBody] SignInRequest request)
         {
             return await _service.SignInAsync(request);
+        }
+
+        [HttpGet("current")]
+        [AllowAnonymous]
+        public async Task<CurrentUserInfoResponse?> GetCurrentUser()
+        {
+            try
+            {
+                var result = _service.GetCurrentUser();
+
+                return result;
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
         }
     }
 }

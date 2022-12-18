@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ViewModels\IAM\Responses\" />
+    <Folder Include="ViewModels\ChatHub\Responses\" />
   </ItemGroup>
 
 </Project>
